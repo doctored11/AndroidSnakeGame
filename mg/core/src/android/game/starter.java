@@ -5,19 +5,17 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.ArrayList;
 
 public class starter extends ApplicationAdapter {
     private Snake snake;
+//    private static final int SCREEN_WIDTH = Gdx.graphics.getWidth(); //?? -! не работате тут - разобраться
+//    private static final int SCREE_HEIGHT = Gdx.graphics.getHeight();
+
 
     private ShapeRenderer shapeRenderer;
     private PersonController controller;
@@ -26,11 +24,12 @@ public class starter extends ApplicationAdapter {
     private int score = 0;
 
 
+
     @Override
     public void create() {
-
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
+
 
         // Создание змеи в центре экрана
         this.snake = new Snake(screenWidth / 2, screenHeight / 2, 32);
@@ -53,11 +52,16 @@ public class starter extends ApplicationAdapter {
 
     }
 
+
     @Override
     public void render() {
+        final int SCREEN_WIDTH = Gdx.graphics.getWidth();
+         final int SCREE_HEIGHT = Gdx.graphics.getHeight();
+
+
         int prevScore = score;
-         score = snake.getLength();
-         if ( score!=prevScore) scoreChecker(snake);
+        score = snake.getLength();
+        if (score != prevScore) scoreChecker(snake);
 
         // Очистка экрана
         Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -84,6 +88,10 @@ public class starter extends ApplicationAdapter {
                 foodList.remove(berry);
                 scoreChecker(snake);
 
+            }
+
+            if (berry.getPosition().x < -1 || berry.getPosition().x > SCREEN_WIDTH || berry.getPosition().y < -1 || berry.getPosition().y > SCREE_HEIGHT) {
+                foodList.remove(this);
             }
 
             berry.draw(shapeRenderer);
@@ -132,9 +140,7 @@ public class starter extends ApplicationAdapter {
         shapeRenderer.dispose();
     }
 
-    public  void scoreChecker(Snake snake) {
-
-
+    public void scoreChecker(Snake snake) {
 
         if (score % 5 == 0 && Math.random() > 0.55) {
             Berry br = new Berry(Color.ORANGE);
@@ -146,6 +152,12 @@ public class starter extends ApplicationAdapter {
             br.spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             foodList.add(br);
         }
+        if (score % 8 == 0 && Math.random() >= 0.85) {
+            Mouse ms = new Mouse();
+            ms.spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            foodList.add(ms);
+        }
 
     }
+
 }

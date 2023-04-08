@@ -55,7 +55,9 @@ public class Food {
     public int getSaturation() {
         return saturation;
     }
-
+    public float getSize() {
+        return size;
+    }
     public Color getColor() {
         return color;
     }
