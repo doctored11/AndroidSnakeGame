@@ -147,7 +147,7 @@ public class Snake {
             if (head.dst(food) < RADIUS) {
                 int sat =  foodList.get(i).getSaturation();
                 this.grow(sat);
-                foodList.get(i).spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), (int) ((Math.random() * ((2 - 1) + 1)) + 1));
+                foodList.get(i).spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), (int) ((Math.random() * ((2 - 1) + 1)) + 1),this);
 
                 return false;
             }
@@ -156,5 +156,7 @@ public class Snake {
     }
 
 
-
+    public float getSegmentSize() {
+        return blockSize;
+    }
 }

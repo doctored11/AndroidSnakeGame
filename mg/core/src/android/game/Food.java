@@ -51,6 +51,59 @@ public class Food {
         }
     }
 
+    public void spawn(int screenWidth, int screenHeight, int saturation, Snake snake) {
+        this.saturation = saturation;
+
+        // Сгенерировать случайные координаты, не пересекающиеся с координатами змеи
+        Vector2 randomPosition = new Vector2();
+        boolean intersectsSnake = false;
+        do {
+            float x = MathUtils.random(screenWidth);
+            float y = MathUtils.random(screenHeight);
+            randomPosition.set(x, y);
+            intersectsSnake = false;
+            for (int i = 0; i < snake.getLength(); i++) {
+                Vector2 segment = snake.getPosition(i);
+                if (randomPosition.dst(segment) < (this.size + snake.getSegmentSize()) / 2) {
+                    intersectsSnake = true;
+                    break;
+                }
+            }
+        } while (intersectsSnake);
+
+        position.set(randomPosition);
+        if (isTimed) {
+            timer = MathUtils.random(1f, 6f);
+        }
+    }
+    public void spawn(int screenWidth, int screenHeight,  Snake snake) {
+
+
+        // Сгенерировать случайные координаты, не пересекающиеся с координатами змеи
+        Vector2 randomPosition = new Vector2();
+        boolean intersectsSnake = false;
+        do {
+            float x = MathUtils.random(screenWidth);
+            float y = MathUtils.random(screenHeight);
+            randomPosition.set(x, y);
+            intersectsSnake = false;
+            for (int i = 0; i < snake.getLength(); i++) {
+                Vector2 segment = snake.getPosition(i);
+                if (randomPosition.dst(segment) < (this.size + snake.getSegmentSize())*1.5 / 2) {
+                    intersectsSnake = true;
+                    break;
+                }
+            }
+        } while (intersectsSnake);
+
+        position.set(randomPosition);
+        if (isTimed) {
+            timer = MathUtils.random(1f, 6f);
+        }
+    }
+
+
+
 
     public int getSaturation() {
         return saturation;
