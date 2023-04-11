@@ -202,7 +202,7 @@ public class starter extends ApplicationAdapter {
             foodList.add(ms);
         }
         if (score % 20 == 0 && Math.random() > 0.75) {
-           Food bb = new Food(15,Color.BLUE,true,40);
+           Food bb = new Food(21,Color.BLUE,true,40);
             bb.spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), snake);
             foodList.add(bb);
         }

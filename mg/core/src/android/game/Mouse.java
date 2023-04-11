@@ -27,7 +27,7 @@ public class Mouse extends Food {
 
     public Mouse() {
 
-        super(random(3, 8), Color.GRAY, false, random.nextInt(36 - 30 + 1) + 30);
+        super(random(3, 10), Color.GRAY, false, random.nextInt(36 - 30 + 1) + 30);
 
         this.directionChangeDelay = random(MIN_DIRECTION_CHANGE_DELAY, MAX_DIRECTION_CHANGE_DELAY);
 

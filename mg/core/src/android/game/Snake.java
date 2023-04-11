@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Snake {
 
@@ -23,7 +24,7 @@ public class Snake {
         for (int i = 0; i < 3; i++) {
             this.body.add(new Vector2(x - i * blockSize, y));
         }
-        this.speed = 0.1f;
+        this.speed = 0.07f;
         this.stepSize = blockSize;
     }
 
@@ -144,9 +145,13 @@ public class Snake {
         }
         for (int i = 0; i < foodList.size(); i++) {
             Vector2 food = foodList.get(i).getPosition();
+
             final int RADIUS = 50;
             if (head.dst(food) < RADIUS) {
+
                 int sat =  foodList.get(i).getSaturation();
+                if (sat>5 &&Math.random()>0.85) speed-=0.001;
+                if (speed< 0.035) speed =  0.05f;
                 this.grow(sat);
                 foodList.get(i).spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), (int) ((Math.random() * ((2 - 1) + 1)) + 1),this);
 

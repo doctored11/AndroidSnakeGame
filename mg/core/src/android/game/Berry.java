@@ -16,7 +16,7 @@ public class Berry extends Food {
         super(MathUtils.random(1, 2), BERRY_COLOR, false,32);
     }
     public Berry(Color color) {
-        super(MathUtils.random(2, 5), color, true,32);
+        super(MathUtils.random(2, 7), color, true,32);
     }
 
 
