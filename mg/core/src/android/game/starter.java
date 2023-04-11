@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.DistanceFieldFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -31,13 +32,12 @@ import sun.font.TrueTypeFont;
 
 public class starter extends ApplicationAdapter {
     private Snake snake;
+    private BitmapFont font;
+    private SpriteBatch spriteBatch;
 
 
-
-
-
-//    private static final int SCREEN_WIDTH = Gdx.graphics.getWidth(); //?? -! не работате тут - разобраться
-//    private static final int SCREE_HEIGHT = Gdx.graphics.getHeight();
+//     final int SCREEN_WIDTH = Gdx.graphics.getWidth(); //?? -! не работате тут - разобраться
+//    final int SCREE_HEIGHT = Gdx.graphics.getHeight();
 
 
     private ShapeRenderer shapeRenderer;
@@ -51,11 +51,14 @@ public class starter extends ApplicationAdapter {
     float tapScale = 1.0f;
     float tapDuration = 1.0f;
     float tapTimer = 0.0f;
+    Color backColor1 = Color.valueOf("FBFFF0");
+    Color backColor2 = Color.valueOf("D1FCA1");
+    Color backColor3 = Color.valueOf("96FDF8");
+    Color backColor4 = Color.valueOf("BDFEFC");
 
 
     @Override
     public void create() {
-
 
 
         int screenWidth = Gdx.graphics.getWidth();
@@ -94,6 +97,7 @@ public class starter extends ApplicationAdapter {
 
         int prevScore = score;
         score = snake.getLength();
+
         if (score != prevScore) scoreChecker(snake);
 
 
@@ -101,9 +105,14 @@ public class starter extends ApplicationAdapter {
 
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
         if (snake.checkCollision(foodList)) {
             gameStop = true;
             endMenu(delta);
+            shapeRenderer.end();
+
 
             if (restartKey) restart();
 //            restart();
@@ -112,11 +121,15 @@ public class starter extends ApplicationAdapter {
 //
         }
 
+
         if (gameStop) {
             if (restartKey) restart();
+
             endMenu(delta);
             return;
         }
+        drawCheckerboard(SCREEN_WIDTH,SCREE_HEIGHT,128, backColor1,backColor2);
+
         // Обновление змеи
 
         this.snake.move(delta);
@@ -127,7 +140,7 @@ public class starter extends ApplicationAdapter {
 
 
         // Отрисовка каждого блока змеи
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
 //
         // Обновление и отрисовка каждой ягоды
 
@@ -188,6 +201,11 @@ public class starter extends ApplicationAdapter {
             ms.spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), snake);
             foodList.add(ms);
         }
+        if (score % 20 == 0 && Math.random() > 0.75) {
+           Food bb = new Food(15,Color.BLUE,true,40);
+            bb.spawn(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), snake);
+            foodList.add(bb);
+        }
 
     }
 
@@ -211,15 +229,21 @@ public class starter extends ApplicationAdapter {
     }
 
     public void endMenu(float delta) {
+        final int SCREEN_WIDTH = Gdx.graphics.getWidth();
+        final int SCREE_HEIGHT = Gdx.graphics.getHeight();
 
+        drawCheckerboard(SCREEN_WIDTH,SCREE_HEIGHT,32, backColor3,backColor4);
         // создаем экземпляр BitmapFont для отображения текста
         BitmapFont font = new BitmapFont();
+
 
         // устанавливаем цвет текста (белый цвет в данном случае)
         font.setColor(Color.WHITE);
 
         // устанавливаем размер шрифта
-        font.getData().setScale(8);
+        font.getData().setScale(6);
+
+
 
         // отображаем текст "SCORE " + score по центру экрана
         SpriteBatch batch = new SpriteBatch();
@@ -230,20 +254,67 @@ public class starter extends ApplicationAdapter {
         float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
         font.draw(batch, layout, x, y);
 
-        // устанавливаем цвет текста (желтый цвет в данном случае)
-        font.setColor(Color.YELLOW);
-
-        // устанавливаем размер шрифта
-        font.getData().setScale(4);
-
-        // отображаем анимированный текст "Tap tap" в верхнем правом углу экрана
-        GlyphLayout tapLayout = new GlyphLayout();
-        tapLayout.setText(font, "Tap tap");
-        float tapX = Gdx.graphics.getWidth() - tapLayout.width - 10;
-        float tapY = Gdx.graphics.getHeight() - tapLayout.height - 10;
-        font.draw(batch, tapLayout, tapX, tapY);
+        aniTxt(delta,batch,y,layout.height);
 
         batch.end();
+    }
+
+    float scale = 1f;
+    final float ANIMATION_SPEED = 5f;
+    final float MAX_SIZE = 2.5f;
+    final float MIN_SIZE = 1.4f;
+    boolean increasing = true;
+
+
+    public void aniTxt(float delta, Batch batch, float y, float offsetY) {
+        BitmapFont font2 = new BitmapFont();
+
+
+        // Изменяем масштаб ягоды для создания эффекта пульсации
+        font2.setColor(Color.YELLOW);
+        if (increasing) {
+            scale += delta * ANIMATION_SPEED;
+            if (scale >= MAX_SIZE) {
+                scale = MAX_SIZE;
+                increasing = false;
+            }
+        } else {
+            scale -= delta * ANIMATION_SPEED;
+            if (scale <= MIN_SIZE) {
+                scale =MIN_SIZE;
+                increasing = true;
+            }
+
+        }
+
+
+        font2.getData().setScale(scale);
+        GlyphLayout tapLayout = new GlyphLayout();
+        tapLayout.setText(font2, "double click to restart");
+        float tapX = Gdx.graphics.getWidth() / 2 - tapLayout.width / 2;
+        float tapY = (float) (y - (1.2*offsetY));
+        font2.draw(batch, tapLayout, tapX, tapY);
+//
+
+
+    }
+
+
+
+    public void drawCheckerboard(int screenWidth, int screenHeight, int cellSize, Color color1, Color color2) {
+
+
+        int numCellsX = screenWidth / cellSize;
+        int numCellsY = screenHeight / cellSize;
+
+        for (int y = 0; y <= numCellsY; y++) {
+            for (int x = 0; x <= numCellsX; x++) {
+
+                Color color = ((x + y) % 2 == 0) ? color2 : color1;
+                shapeRenderer.setColor(color);
+                shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
+            }
+        }
     }
 
 
@@ -251,12 +322,7 @@ public class starter extends ApplicationAdapter {
 }
 
 
-
-
-
-
-
-    //
+//
 
 
 

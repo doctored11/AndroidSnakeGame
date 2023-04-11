@@ -103,6 +103,7 @@ public class Snake {
         }
     }
 
+
     public void drawBlock(float x, float y, Color color, ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(color);
         shapeRenderer.rect(x, y, blockSize, blockSize);
